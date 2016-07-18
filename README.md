@@ -8,3 +8,7 @@ Provides the methods:
 - primeFactors : returns a list of the prime factors of the input
 
 There are no dependencies for this library, enjoy!
+
+ToDo:
+- improve sieve method to Sieve of Atkins
+- implement a deterministic primality test if desired
