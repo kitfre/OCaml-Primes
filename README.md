@@ -10,3 +10,6 @@ Provides the methods:
 
 Dependencies:
 - zarith : for arbitary precision ints for large primes
+
+Installation:
+- install with `opam install primes`

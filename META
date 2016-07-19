@@ -1,0 +1,4 @@
+description = "A small library for dealing with primes"
+requires = "zarith,core"
+version = "1.0"
+archive(byte) = "primes.cmo"
