@@ -14,7 +14,7 @@ Dependencies:
 
 Installation:
 - install with `opam install primes`
-- 
+
 To Do:
 - switch is_prime test to something determinstic (probably)
 - improve primes sieve method
