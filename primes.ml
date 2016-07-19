@@ -43,20 +43,18 @@ module Primes = struct
             if x < 2 then 2 
             else x
         in
-        (* if even, return right away *)
-        match (p mod 2 = 0) with 
-        | true -> if p = 2 then true else false
-        | _    -> 
-            (* otherwise run miller-rabin *)
-            if k = 0 then true 
-            else let randex = gen_rand (p-2) 
-            in
-            let (d,r) = get_d (p - 1) 0 
-            in
-            let x = (Int.of_float ((Float.of_int randex) ** (Float.of_int d))) mod p 
-            in
-            if (x = 1 || x = (p-1)) then miller_rabin (k-1) p 
-            else inner_loop x r k p
+        if (p < 100) then (List.mem (primes 100) p) 
+        else
+        (* otherwise run miller-rabin *)
+        if k = 0 then true 
+        else let randex = gen_rand p 
+        in
+        let (d,r) = get_d (p - 1) 0 
+        in
+        let x = (Int.of_float ((Float.of_int randex) ** (Float.of_int d))) mod p 
+        in
+        if (x = 1 || x = (p-1)) then miller_rabin (k-1) p 
+        else inner_loop x r k p
     (* mutually recursive method which handles the inner loop
      * of Miller-Rabin
      *)
@@ -85,5 +83,5 @@ module Primes = struct
                       else prime_factors' (p / n) n acc
             | false -> prime_factors' p (n+1) acc
         in
-        prime_factors' p 2 []        
-end
+        prime_factors' p 2 []       
+end    
