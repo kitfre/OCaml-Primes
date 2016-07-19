@@ -53,7 +53,7 @@ module Primes = struct
             in
             let (d,r) = get_d (p - 1) 0 
             in
-            let x = (int_of_float ((float_of_int randex) ** (float_of_int d))) mod p 
+            let x = (Int.of_float ((Float.of_int randex) ** (Float.of_int d))) mod p 
             in
             if (x = 1 || x = (p-1)) then miller_rabin (k-1) p 
             else inner_loop x r k p
