@@ -8,4 +8,8 @@ Provides the methods:
 - primeFactors : returns a list of the prime factors of the input
 
 Dependencies:
-  - oml for uniform Float functions
+- oml : for uniform float operators
+
+ToDo:
+- improve sieve method to Sieve of Atkins
+- implement a deterministic primality test if desired

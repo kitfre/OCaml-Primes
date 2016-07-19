@@ -7,4 +7,5 @@ Provides the methods:
 - isPrime : returns the primality of input as determined by the Miller-Rabin test
 - primeFactors : returns a list of the prime factors of the input
 
-There are no dependencies for this library, enjoy!
+Dependencies:
+  - oml for uniform Float functions
