@@ -1,3 +1,5 @@
+#require "oml"
+open Oml.Util.Float
 
 module Primes = struct
     (* Returns a list of the first `top` primes, give by the sieve of
