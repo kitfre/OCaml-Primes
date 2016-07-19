@@ -9,9 +9,4 @@ Provides the methods:
 - prime_factors : returns a list of the prime factors of the input
 
 Dependencies:
-- oml : for uniform float operators
 - zarith : for arbitary precision ints for large primes
-
-ToDo:
-- improve sieve method to Sieve of Atkins
-- implement a deterministic primality test if desired
