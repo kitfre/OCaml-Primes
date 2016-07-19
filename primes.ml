@@ -1,32 +1,41 @@
 #require "oml"
-open Oml.Util.Float
+#require "zarith"
 
 module Primes = struct
     (* Returns a list of the first `top` primes, give by the sieve of
-     * erasthonenes *)
-    let primes top =
+     * erasthonenes
+     * Uses zarith for big_ints
+     *)
+    let big_primes top =
         let rec sieve (tt :: tts) =
-            let non_divisor x = (x mod tt <> 0) in
+            let non_divisor x = Z.(mod) x tt <> Z.zero in
             let non_divisors = List.filter tts ~f:non_divisor in
             if non_divisors = [] then [tt] else
                 (tt :: sieve non_divisors) in
         let rec range store a b =
             if a > b then store 
-            else range (a :: store) (a + 1) b 
+            else range (a :: store) (Z.add a Z.one) b 
         in
-        let p = List.rev (range [] 2 top) in
+        let p = List.rev (range [] (Z.of_int 2) (Z.of_int top)) in
         sieve p
     
+    (* does the same as big_primes, but returns
+     * a list of ints instead of Z.t *)
+    let primes top = List.map (big_primes top) ~f:Z.to_int
+
     (* Helper methods for Miller Rabin 
      * get_d returns d and r in the step write (n-1) as 2^r * d with d odd
      * gen_rand handles generating a random int in [2, p-2]
      *)
-    let rec get_d n r = if (n mod 2 = 0) then get_d (n/2) (r+1) else (n, r)
-    let gen_rand cap = let x = Random.int cap in 
-        if x < 2 then 2 else x
 
     (* Implementation of Miller-Rabin primality test *)
-    let rec miller_rabin k p = match (p mod 2 = 0) with 
+    let rec miller_rabin k p =
+        let rec get_d n r = if (n mod 2 = 0) then get_d (n/2) (r+1) else (n, r)
+        in
+        let gen_rand cap = let x = Random.int cap in 
+            if x < 2 then 2 else x
+        in
+        match (p mod 2 = 0) with 
         | true -> if p = 2 then true else false
         | _    -> 
             if k = 0 then true else
@@ -43,17 +52,16 @@ module Primes = struct
         inner_loop x' (r-1) k p
 
     (* Default k-value 1000 for Miller Rabin *)
-    let isPrime p = miller_rabin 1000 p
-
-    (* Int set for convenience *) 
+    let is_prime p = miller_rabin 1000 p
 
     (* Gather prime factors using Miller_Rabin *)
-    let rec primeFactors' p n acc  = if p = 1 then List.rev acc else
-        match (p mod n = 0) with
-        | true -> if isPrime n then primeFactors' (p / n) n 
-            (if (List.hd acc = Some n) then acc else (n :: acc)) 
-            else primeFactors' (p / n) n acc
-        | false -> primeFactors' p (n+1) acc
-    
-    let primeFactors p = primeFactors' p 2 []
+    let prime_factors p = 
+        let rec primeFactors' p n acc  = if p = 1 then List.rev acc else
+            match (p mod n = 0) with
+            | true -> if is_prime n then primeFactors' (p / n) n 
+                (if (List.hd acc = Some n) then acc else (n :: acc)) 
+                else primeFactors' (p / n) n acc
+            | false -> primeFactors' p (n+1) acc
+        in
+        primeFactors' p 2 [] 
 end
