@@ -1,4 +1,4 @@
-#require "zarith"
+open Core.Std
 
 module Primes = struct
     (* Returns a list of the first `top` primes, give by the sieve of

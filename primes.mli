@@ -1,6 +1,4 @@
-#require "zarith"
-
-module Primes = sig
+module Primes : sig
     
     (* uses Sieve of Eratosthenes to find the first n primes. Returns a Z.t list
      * in order to accomodate for large primes. *)
@@ -21,11 +19,11 @@ module Primes = sig
      * Primes.miller_rabin k p where k is the number of iterations and p is the
      * input to test.
      *)
-    val isPrime : int -> bool
+    val is_prime : int -> bool
 
     (* Uses Miller-Rabin to find primes and repeatedly divides them out of the
      * input, collecting them along the way. Returns an int list of prime
      * factors of the input in ascending order.
      *)
-    val primeFactors : int -> int list
+    val prime_factors : int -> int list
 end
