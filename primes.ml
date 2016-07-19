@@ -59,7 +59,7 @@ module Primes = struct
      * of Miller-Rabin
      *)
     and inner_loop x r k p = if r = 0 then false 
-        else let x' = (int_of_float ((float_of_int x) ** 2.)) mod p 
+        else let x' = (Int.of_float ((Float.of_int x) ** 2.)) mod p 
         in
         if x' = 1 then false 
         else if x' = (p-1) then miller_rabin (k-1) p 
