@@ -28,44 +28,31 @@ module Primes = struct
      * a list of ints instead of Z.t *)
     let primes top = List.map (big_primes top) ~f:Z.to_int 
     
-    (* tests primality of p by AKS Primality Test *)
-    let is_prime p = 
-    (* Defined scanl, which is like fold but it creates  
-     * a list of the results *)
-    let scanl = let rec scanl' acc f q ls =
-        match ls with 
-            | [] -> acc
-            | a::aas -> scanl' (q::acc) f (f q a) aas 
+    (* Lazy implementation of AKS Primality Test *)
+    let is_prime p =
+        let interval x y by = match (x = y) with
+        | true  -> Gen.empty
+        | false  -> Gen.unfold (fun z -> 
+            if (compare x y) = (compare z y) 
+            then Some (z, (by + z)) else None) x
         in
-         scanl' []
-    in
-    (* Creates a list [t..f]*)
-    let range t f = let rec range' t' f' acc = match (f' = t') with
-        | true -> (f' :: acc)
-        | _    -> range' t' (f'-1)  (f' :: acc)
+        let binom a b = 
+            let frac = (Gen.fold ( * ) 1 (interval a (a-b) (-1))) /
+            (Gen.fold ( * ) 1 (interval b 0 (-1))) 
+            in 
+            let res =
+            (if compare  b a < 0 && (b mod 2 = 0)
+            then -1
+            else 1) 
+            in
+            frac |> ( * ) @@ res
         in
-        range' t f []
-    in
-    (* calculates the pth level of pascals triangle *)
-    let binom p = scanl (fun z i -> z * (p-i+1) / i) 1 (range 1 p)
-    in
-    (* removes last element of list *)
-    let rm_last l = (List.rev (match (List.tl (List.rev l)) with | Some x -> x |
-    None -> []))
-    in
-    (* drops leading and trailing 1 from binom p *)
-    let binom' p = match (rm_last (binom p)) with 
-        | (x::xs) -> xs
-        | [] -> []
-    in
-    (* reduces a list of booleans with and *)
-    let and' t = List.fold t ~init:true ~f:((&&))
-    in
-    (* if p < 2 then trivially not prime
-     * else use the AKS test for primality *)
-    match (p < 2) with
-        | true  -> false
-        | false -> and' (List.map (binom' p) ~f:(fun n -> n mod p = 0))
+        let expansion n =
+            Gen.map (binom n) (interval 0 (n+1) 1) 
+        in
+        (Gen.drop 1 (expansion p) |> Gen.peek |> Gen.filter_map (
+        function (_, None) -> None | (x,  _) -> Some x ))
+        |> Gen.for_all (fun n -> n mod p = 0)
     
     (* Gather prime factors using Aks*)
     let prime_factors p = 

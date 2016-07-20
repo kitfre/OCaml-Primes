@@ -10,18 +10,14 @@ module Primes : sig
      *)
     val primes : int -> int list
 
-    (* Uses the Miller-Rabin Probabalistic Primality test to decide the
-     * primality of the input. Runs the test 1000 times by default in order
-     * to provide a very high level of accuracy while maintaining speed.
-     * See https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
-     * for more information on the test itself.
-     * Can configure the number of times the test is run by calling
-     * Primes.miller_rabin k p where k is the number of iterations and p is the
-     * input to test.
+    (* Uses a lazy implementation of the AKS Primality Test to determine
+     * primality of input.
+     * See https://en.wikipedia.org/wiki/AKS_primality_test
+     * for more information
      *)
     val is_prime : int -> bool
 
-    (* Uses Miller-Rabin to find primes and repeatedly divides them out of the
+    (* Uses AKS to find primes and repeatedly divides them out of the
      * input, collecting them along the way. Returns an int list of prime
      * factors of the input in ascending order.
      *)
