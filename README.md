@@ -15,3 +15,5 @@ Dependencies:
 Installation:
 - install with `opam install primes`
 
+Todo:
+- make "AKS" implementation closer to actual AKS test
