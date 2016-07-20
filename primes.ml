@@ -32,11 +32,12 @@ module Primes = struct
     let is_prime p = 
     (* Defined scanl, which is like fold but it creates  
      * a list of the results *)
-    let scanl = let rec scanlGo f q ls = q::(match ls with
-        | [] -> []
-        | a::aas -> scanlGo f (f q a) aas)
-    in
-        scanlGo
+    let scanl = let rec scanl' acc f q ls =
+        match ls with 
+            | [] -> acc
+            | a::aas -> scanl' (q::acc) f (f q a) aas 
+        in
+         scanl' []
     in
     (* Creates a list [t..f]*)
     let range t f = let rec range' t' f' acc = match (f' = t') with
