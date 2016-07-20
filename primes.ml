@@ -27,52 +27,46 @@ module Primes = struct
     (* does the same as big_primes, but returns
      * a list of ints instead of Z.t *)
     let primes top = List.map (big_primes top) ~f:Z.to_int 
-
-    (* Implementation of Miller-Rabin primality test 
-     * see https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
-     * for more information
-     *)
-    let rec miller_rabin k p =
-        (* Helper methods for Miller Rabin 
-         * get_d returns d and r in the step write (n-1) as 2^r * d with d odd
-         * gen_rand handles generating a random int in [2, p-2]
-         *)
-        let rec get_d n r = if (n mod 2 = 0) then get_d (n/2) (r+1) else (n, r)
+    
+    (* tests primality of p by AKS Primality Test *)
+    let is_prime p = 
+    (* Defined scanl, which is like fold but it creates  
+     * a list of the results *)
+    let scanl = let rec scanlGo f q ls = q::(match ls with
+        | [] -> []
+        | a::aas -> scanlGo f (f q a) aas)
+    in
+        scanlGo
+    in
+    (* Creates a list [t..f]*)
+    let range t f = let rec range' t' f' acc = match (f' = t') with
+        | true -> (f' :: acc)
+        | _    -> range' t' (f'-1)  (f' :: acc)
         in
-        let gen_rand cap = let x = Random.int cap in 
-            if x < 2 then 2 
-            else x
-        in
-        if (p < 100) then (List.mem (primes 100) p) 
-        else
-        (* otherwise run miller-rabin *)
-        if k = 0 then true 
-        else let randex = gen_rand p 
-        in
-        let (d,r) = get_d (p - 1) 0 
-        in
-        let x = (Int.of_float ((Float.of_int randex) ** (Float.of_int d))) mod p 
-        in
-        if (x = 1 || x = (p-1)) then miller_rabin (k-1) p 
-        else inner_loop x r k p
-    (* mutually recursive method which handles the inner loop
-     * of Miller-Rabin
-     *)
-    and inner_loop x r k p = if r = 0 then false 
-        else let x' = (Int.of_float ((Float.of_int x) ** 2.)) mod p 
-        in
-        if x' = 1 then false 
-        else if x' = (p-1) then miller_rabin (k-1) p 
-        else inner_loop x' (r-1) k p
-
-    (* Default k-value 1000 for Miller Rabin 
-     * makes it extremely unlikely that 
-     * the test is incorrect, but still
-     * fast
-     *)
-    let is_prime p = miller_rabin 1000 p
-
-    (* Gather prime factors using Miller_Rabin *)
+        range' t f []
+    in
+    (* calculates the pth level of pascals triangle *)
+    let binom p = scanl (fun z i -> z * (p-i+1) / i) 1 (range 1 p)
+    in
+    (* removes last element of list *)
+    let rm_last l = (List.rev (match (List.tl (List.rev l)) with | Some x -> x |
+    None -> []))
+    in
+    (* drops leading and trailing 1 from binom p *)
+    let binom' p = match (rm_last (binom p)) with 
+        | (x::xs) -> xs
+        | [] -> []
+    in
+    (* reduces a list of booleans with and *)
+    let and' t = List.fold t ~init:true ~f:((&&))
+    in
+    (* if p < 2 then trivially not prime
+     * else use the AKS test for primality *)
+    match (p < 2) with
+        | true  -> false
+        | false -> and' (List.map (binom' p) ~f:(fun n -> n mod p = 0))
+    
+    (* Gather prime factors using Aks*)
     let prime_factors p = 
         let rec divide_out p n = if p mod n = 0 then divide_out (p/n) n
         else p
@@ -84,4 +78,5 @@ module Primes = struct
             | false -> prime_factors' p (n+1) acc
         in
         prime_factors' p 2 []       
+ 
 end    
