@@ -1,6 +1,6 @@
 open Core.Std
 
-module Primes = struct
+
     (* Returns a list of the first `top` primes, give by the sieve of
      * erasthonenes
      * Uses zarith for big_ints
@@ -67,4 +67,4 @@ module Primes = struct
         in
         prime_factors' p 2 []       
  
-end    
+

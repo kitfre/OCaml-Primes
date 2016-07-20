@@ -1,7 +1,7 @@
 
 opam-version: "1.2"
 name: "primes"
-version: "1.0"
+version: "1.0.1"
 maintainer: "Kit Freddura <kitfreddura@gmail.com>"
 authors: "Kit Freddura <kitfreddura@gmail.com>"
 license: "MIT License"
@@ -13,12 +13,8 @@ build: [
 ]
 install: [
 ["ocamlfind" "ocamlc" "-c" "-linkpkg" "-package" "zarith" "primes.mli"]
-["ocamlfind" "ocamlc" "-thread" "-o" "primes.cma" "-linkpkg" "-package" "zarith,core" "primes.ml"]
-["cp" "primes.cmo" "%{prefix}%/lib/primes/"]
-["cp" "primes.cmi" "%{prefix}%/lib/primes/"]
-["cp" "primes.cma" "%{prefix}%/lib/primes/"]
-["cp" "primes.mli" "%{prefix}%/lib/primes/"]
-["cp" "META" "%{prefix}%/lib/primes/"]
+["ocamlfind" "ocamlopt" "-a" "-o" "primes.cmxa" "primes.ml" "-package" "zarith,core,gen" "-thread"]
+["ocamlfind" "install" "primes" "META" "primes.c*" "primes.mli" "primes.o" "primes.a"]
 ]
 remove: ["ocamlfind" "remove" "primes"]
 depends: [
