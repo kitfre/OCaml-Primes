@@ -1,5 +1,5 @@
 description = "A small library for dealing with primes"
-requires = "zarith,core,gen"
+requires = "zarith,gen"
 version = "1.0.1"
 archive(native) = "primes.cmxa"
 archive(byte) = "primes.cmo"
