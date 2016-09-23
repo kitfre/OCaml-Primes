@@ -23,4 +23,4 @@ val prime_factors : int -> int list
 
 (* Uses the probabilistic Miller-Rabin to determine primality of the input
  * See https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test *)
-val miller_rabin : ?trials:int -> Z.t -> bool
+val miller_rabin_test : ?trials:int -> Z.t -> bool
