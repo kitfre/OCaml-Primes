@@ -15,9 +15,12 @@ val primes : int -> int list
 *)
 val is_prime : int -> bool
 
-(* Uses AKS to find primes and repeatedly divides them out of the
- * input, collecting them along the way. Returns an int list of prime
+(* uses aks to find primes and repeatedly divides them out of the
+ * input, collecting them along the way. returns an int list of prime
  * factors of the input in ascending order.
  *)
 val prime_factors : int -> int list
 
+(* Uses the probabilistic Miller-Rabin to determine primality of the input
+ * See https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test *)
+val miller_rabin : ?trials:int -> Z.t -> bool

@@ -52,7 +52,7 @@ let primes top = List.map Z.to_int (big_primes top)
 let is_prime p = big_is_prime (Z.of_int p)
 
 (* Gather prime factors using Aks*)
-let prime_factors p = 
+let prime_factors p =
   let rec divide_out p n = if p mod n = 0 then divide_out (p/n) n
     else p
   in
@@ -62,6 +62,49 @@ let prime_factors p =
         else prime_factors' (p / n) n acc
       | false -> prime_factors' p (n+1) acc
   in
-  prime_factors' p 2 []       
+  prime_factors' p 2 []
+
+let two = Z.of_int 2
+let int_pred i = i - 1
+let int_succ i = i + 1
+
+let miller_rabin_test ?(trials=100) n =
+ let open Z in
+ let rec factors_of_2 n =
+   match n mod two with
+   | x when x = zero -> int_succ (factors_of_2 (n / two))
+   | _ -> 0 in
+ let choose_d_and_r n =
+   if (n mod two) = zero then None else
+     let r_l = factors_of_2 (n - one) in
+     let d = (n - one) / (Z.shift_left one r_l) in
+     Some (d,r_l) in
+ if n = one then false else choose_d_and_r n |> function
+   | None -> false
+   | Some (d,r) ->
+     let rec loop i = match i with
+       | i when i = trials -> true
+       | _ ->
+         let a = Random.float (Z.to_float (n-two*two))
+           |> Z.of_float |> Z.add two in
+         let x = a ** (Z.to_int d) mod n in
+         match x with
+         | x when x = n - one || x = one ->
+           loop (int_succ i)
+         | x ->
+           let rec reduce r =
+             let x = (x * x) mod n in
+              match x with
+               | x when x = one -> false
+               | x when x = n - one -> loop (int_succ i)
+               | _ -> if r = 0 then false else reduce (int_pred r) in
+           reduce (int_pred r) in
+      loop 0
+
+
+
+
+
+
 
 
